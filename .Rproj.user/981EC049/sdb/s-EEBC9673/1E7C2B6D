@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(dygraphs)\n\nshinyUI(fluidPage(\n  \n  titlePanel(\"Analysis Of Enviro Car Tracks Using R\"),\n  \n  sidebarLayout(\n    sidebarPanel(\n      selectInput(\"param1\", \n                  label = \"Parameter 1\",\n                  choices = list(\"Speed\", \"Consumption\",\n                                 \"Intake.Temperature\", \"Intake.Pressure\",\"CO2\",\"Calculated.MAF\"),\n                  selected = \"Speed\"),\n      selectInput(\"param2\", \n                  label = \"Parameter 2\",\n                  choices = list(\"Speed\", \"Consumption\",\n                                 \"Intake.Temperature\", \"Intake.Pressure\",\"CO2\",\"Calculated.MAF\"),\n                  selected = \"CO2\")\n      \n    \n    ),\n    mainPanel(\n      dygraphOutput(\"dygraph\")\n    )\n  )\n))",
+    "created" : 1457528139582.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1911081141",
+    "id" : "1E7C2B6D",
+    "lastKnownWriteTime" : 1457535274,
+    "last_content_update" : 1457535274776,
+    "path" : "~/EnviroShiny/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

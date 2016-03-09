@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(dygraphs)\nlibrary(datasets)\nlibrary(rgdal)\nlibrary(rjson)\nlibrary(maptools)\nshinyServer(function(input, output) {\n\n  url =\"https://envirocar.org/api/stable/tracks/56d9dc80e4b0b5e23789124a\"\n  \n  importEnviroCar = function(file) {\n    # spCbind\n    # read data as spatial object:\n    layer = readOGR(file, layer = \"OGRGeoJSON\")\n    # convert time from text to POSIXct:\n    layer$time = as.POSIXct(layer$time, format = \"%Y-%m-%dT%H:%M:%S\")\n    # the third column is JSON, we want it in a table (data.frame) form: 1. form\n    # a list of lists\n    l1 = lapply(as.character(layer[[3]]), fromJSON)\n    # 2. parse the $value elements in the sublist:\n    l2 = lapply(l1, function(x) as.data.frame(lapply(x, function(X) X$value)))\n    # bind these value elements, row by row, together\n    ret = do.call(rbind, l2)\n    # read the units:\n    units = lapply(l1[1], function(x) as.data.frame(lapply(x, function(X) X$unit)))\n    # add a units attribute to layer\n    layer[[3]] = NULL\n    # add the table as attributes to the spatial object\n    if (length(layer) == nrow(ret)) {\n      layer = spCbind(layer, ret)\n      attr(layer, \"units\") = units[[1]]\n      layer\n    } else NULL\n  }\n  sp = importEnviroCar(url)\n  predicted <- reactive({\n   \n    \n    data1=sp[,input$param1]\n    data2=sp[,input$param2]\n    d3=sp[,\"time\"]\n    d3=d3[[1]]\n    d1=data1[[1]]\n    d2=data2[[1]]\n    speedtime1=data.frame(d1,d3)\n    speedtime2=data.frame(d2,d3)\n    speedtime1.ts <- xts(speedtime1$d1, order.by=speedtime1$d3)\n    speedtime2.ts <- xts(speedtime2$d2, order.by=speedtime2$d3)\n    combspeed <- cbind(speedtime1.ts,speedtime2.ts)\n  })\n  \n  output$dygraph <- renderDygraph({\n    dygraph(predicted())  %>%\n    dySeries(\"..1\", label = input$param1) %>%\n      dySeries(\"..2\", label = input$param2) %>%\n      dyOptions(stackedGraph = TRUE) %>%\n      dyRangeSelector(height = 20)\n  })\n \n  \n})",
+    "created" : 1457528139768.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1594772962",
+    "id" : "F0267D40",
+    "lastKnownWriteTime" : 1457534679,
+    "last_content_update" : 1457534679665,
+    "path" : "~/EnviroShiny/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
